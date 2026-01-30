@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Container } from 'react-bootstrap'
-import { InputField } from './inputField'
+import { InputField } from './components/inputField'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
