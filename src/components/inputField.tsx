@@ -8,8 +8,7 @@ export const InputField: React.FC = () => {
     const handleFile1Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const wb1 = read(toArrayBuffer)
-            const temJson1: object[] = utils.sheet_to_json(wb1.Sheets[wb1.SheetNames[0]])
+            const temJson1: object[] = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             temJson1.shift()
             setJson1(temJson1)
         }
@@ -17,8 +16,7 @@ export const InputField: React.FC = () => {
     const handleFile2Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const wb1 = read(toArrayBuffer)
-            const temJson2: object[] = utils.sheet_to_json(wb1.Sheets[wb1.SheetNames[0]])
+            const temJson2: object[] = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             temJson2.shift()
             setJson2(temJson2)
         }
@@ -29,7 +27,14 @@ export const InputField: React.FC = () => {
     //      資訊包含：採購單號、品號、品名、規格、請購數量、請購單位。不包含：品號是H23010001, H23020001的項目。
     //樣式
 
-    const List2 = json2?.map((item, i) => {
+    const poRegex = /(.+)(-.+)/
+
+    const mainList1Map = new Map()
+    for (let i of json1 ? json1 : []) {
+        mainList1Map.set(i, { "請購單號": json1?.["請購單號" as any], "採購單號": json1?.["採購單號" as any] })
+    }
+    console.log(mainList1Map)
+    const mainList2 = json2?.map((item, i) => {
 
     })
 
