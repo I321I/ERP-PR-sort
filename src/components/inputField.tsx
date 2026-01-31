@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
 import { read, readFile, utils, writeFileXLSX, type Sheet } from 'xlsx';
 
-export const InputField: React.FC = () => {
-    const [json1, setJson1] = useState<object[] | null>(null)
-    const [json2, setJson2] = useState<object[] | null>(null)
+type file = objNestedJson[]
+interface objNestedJson {
+    "請購單號": string;
+    "採購單號": string;
+}
 
+export const InputField: React.FC = () => {
+    const [json1, setJson1] = useState<file | null>(null)
+    const [json2, setJson2] = useState<file | null>(null)
     const handleFile1Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const temJson1: object[] = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
+            const temJson1: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             temJson1.shift()
             setJson1(temJson1)
         }
@@ -16,7 +21,7 @@ export const InputField: React.FC = () => {
     const handleFile2Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const temJson2: object[] = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
+            const temJson2: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             temJson2.shift()
             setJson2(temJson2)
         }
@@ -28,12 +33,33 @@ export const InputField: React.FC = () => {
     //樣式
 
     const poRegex = /(.+)(-.+)/
-
     const mainList1Map = new Map()
-    for (let i of json1 ? json1 : []) {
-        mainList1Map.set(i, { "請購單號": json1?.["請購單號" as any], "採購單號": json1?.["採購單號" as any] })
+    const mainList2Map = new Map()
+    if (json1) {
+        for (let i = 0; i < (json1 ? json1.length : 1); i++) {
+            mainList1Map.set(
+                poRegex.exec((json1?.[i])["採購單號"])?.[1],
+                {
+                    "請購單號": (json1?.[i])["請購單號"],
+                    "採購單號": poRegex.exec((json1?.[i])["採購單號"])?.[1]
+                })
+        }
     }
-    console.log(mainList1Map)
+    if (mainList1Map && json2) {
+        for (let i = 0; i < (json2 ? json2.length : 1); i++) {
+            mainList2Map.set(
+                poRegex.exec((json2?.[i])["採購單號"])?.[1],
+                {
+                    "請購單號": (json2?.[i])["請購單號"],
+                    "採購單號": poRegex.exec((json2?.[i])["採購單號"])?.[1]
+                })
+        }
+        for (let [key] of mainList1Map) {
+            if (mainList2Map.has(key)) { mainList2Map.delete(key) }
+        }
+        console.log(mainList2Map)
+    }
+
     const mainList2 = json2?.map((item, i) => {
 
     })
@@ -41,11 +67,6 @@ export const InputField: React.FC = () => {
     return (
         <>
             <input type="file" id="ERP請購狀態表excel1" accept=".xlsx, .xls" onChange={handleFile1Change}></input>
-            {/* {json1 && (
-                <div>
-                    {JSON.stringify(json1)}
-                </div>
-            )} */}
             <input type="file" id="ERP請購狀態表excel2" accept=".xlsx, .xls" onChange={handleFile2Change}></input>
             {/* {json2 && (
                 <div>
