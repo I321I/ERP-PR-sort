@@ -30,35 +30,35 @@ export const InputField: React.FC = () => {
     //1. 第二List的array：排除掉第一List有的項目，且項目不重複。資訊包含請購單號、採購單號，採購單號不需要第二"-"後的資訊。
     //2. 第二List的次array：
     //      資訊包含：採購單號、品號、品名、規格、請購數量、請購單位。不包含：品號是H23010001, H23020001的項目。
+    //          
     //樣式
-
     const poRegex = /(.+)(-.+)/
-    const mainList1Map = new Map()
-    const mainList2Map = new Map()
-    if (json1) {
-        for (let i = 0; i < (json1 ? json1.length : 1); i++) {
-            mainList1Map.set(
-                poRegex.exec((json1?.[i])["採購單號"])?.[1],
+    const jsonToMap = (json: file) => {
+        const result = new Map()
+        for (let i = 0; i < json.length; i++) {
+            result.set(
+                poRegex.exec((json[i])["採購單號"])?.[1],
                 {
-                    "請購單號": (json1?.[i])["請購單號"],
-                    "採購單號": poRegex.exec((json1?.[i])["採購單號"])?.[1]
+                    "請購單號": (json[i])["請購單號"],
+                    "採購單號": poRegex.exec((json[i])["採購單號"])?.[1]
                 })
         }
+        return result
     }
-    if (mainList1Map && json2) {
-        for (let i = 0; i < (json2 ? json2.length : 1); i++) {
-            mainList2Map.set(
-                poRegex.exec((json2?.[i])["採購單號"])?.[1],
-                {
-                    "請購單號": (json2?.[i])["請購單號"],
-                    "採購單號": poRegex.exec((json2?.[i])["採購單號"])?.[1]
-                })
+    const secMapDifference = (map1: Map<any, any>, map2: Map<any, any>) => {
+        const result = new Map(map2)
+        for (let [key] of map1) {
+            if (result.has(key)) { result.delete(key) }
         }
-        for (let [key] of mainList1Map) {
-            if (mainList2Map.has(key)) { mainList2Map.delete(key) }
-        }
-        console.log(mainList2Map)
+        return result
     }
+    useEffect(() => {
+        const mainList1Map = json1 ? jsonToMap(json1) : new Map
+        const mainList2Map = json2 ? jsonToMap(json2) : new Map
+        const mainList2Difference = (mainList1Map.size !== 0 && mainList2Map.size !== 0) ? secMapDifference(mainList1Map, mainList2Map) : new Map()
+        console.log(mainList2Map, mainList2Difference)
+
+    }, [json1, json2])
 
     const mainList2 = json2?.map((item, i) => {
 
