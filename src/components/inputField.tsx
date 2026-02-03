@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { read, readFile, utils, writeFileXLSX, type Sheet } from 'xlsx';
 import { useAppDispatch, useAppSelector } from "../main";
 import { setMainList1, setMainList2 } from "../store/listContent";
 import { DateSelector } from "./Date";
+import styles from './InputField.module.scss'
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -72,17 +73,29 @@ export const InputField: React.FC = () => {
 
 
     return (
-        <>
-            <DateSelector /> 
-            <input type="file" id="ERP請購狀態表excel1" accept=".xlsx, .xls" onChange={handleFile1Change}></input>
-            <DateSelector />
-            <input type="file" id="ERP請購狀態表excel2" accept=".xlsx, .xls" onChange={handleFile2Change}></input>
-            {/* {json2 && (
+        <div className={`${styles.input}`}>
+            <div>
                 <div>
-                    {JSON.stringify(json2)}
+                    <DateSelector />
+                    <select>
+                        <option>001</option>
+                        <option>新增檔案</option>
+                    </select>
                 </div>
-            )} */}
-
-        </>
+                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">選擇檔案</label>
+                <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
+            </div>
+            <div>
+                <div>
+                    <DateSelector />
+                    <select>
+                        <option>001</option>
+                        <option>新增檔案</option>
+                    </select>
+                </div>
+                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">選擇檔案</label>
+                <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
+            </div>
+        </div>
     )
 }
