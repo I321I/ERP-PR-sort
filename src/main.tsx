@@ -16,9 +16,9 @@ export const useAppDispatch = useDispatch.withTypes<typeof store.dispatch>()
 export const useAppSelector = useSelector.withTypes<ReturnType<typeof store.getState>>()
 
 createRoot(document.getElementById('root')!).render(
-  <Provider store={store}>
-    <StrictMode>
+  <StrictMode>
+    <Provider store={store}>
       <App />
-    </StrictMode>
-  </Provider>,
+    </Provider>
+  </StrictMode>,
 )

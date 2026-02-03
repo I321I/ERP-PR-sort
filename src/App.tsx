@@ -1,14 +1,15 @@
 import { Container } from 'react-bootstrap'
-import { InputField } from './components/inputField'
-import { DateSelector } from './components/date'
+import { InputField } from './components/InputField'
+import { Navigation } from './components/Navigation.tsx'
 
 function App() {
   return (
     <>
       <Container>
-        <DateSelector></DateSelector>
-        <InputField></InputField>
+        <Navigation />
+        <InputField />
       </Container>
+
     </>
   )
 }

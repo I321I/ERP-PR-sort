@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { read, readFile, utils, writeFileXLSX, type Sheet } from 'xlsx';
 import { useAppDispatch, useAppSelector } from "../main";
 import { setMainList1, setMainList2 } from "../store/listContent";
+import { DateSelector } from "./Date";
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -65,20 +66,23 @@ export const InputField: React.FC = () => {
         const mainList1Map = json1 ? jsonToMap(json1) : new Map()
         const mainList2Map = json2 ? jsonToMap(json2) : new Map()
         const mainList2Difference = (mainList1Map.size !== 0 && mainList2Map.size !== 0) ? secMapDifference(mainList1Map, mainList2Map) : new Map()
-        dispatch(setMainList1(mainList1Map))
-        dispatch(setMainList2(mainList2Map))
+        // dispatch(setMainList1(mainList1Map))
+        // dispatch(setMainList2(mainList2Map))
     }, [json1, json2])
 
 
     return (
         <>
+            <DateSelector /> 
             <input type="file" id="ERP請購狀態表excel1" accept=".xlsx, .xls" onChange={handleFile1Change}></input>
+            <DateSelector />
             <input type="file" id="ERP請購狀態表excel2" accept=".xlsx, .xls" onChange={handleFile2Change}></input>
             {/* {json2 && (
                 <div>
                     {JSON.stringify(json2)}
                 </div>
             )} */}
+
         </>
     )
 }
