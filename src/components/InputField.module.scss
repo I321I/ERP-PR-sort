@@ -1,9 +1,30 @@
 .input {
     display: flex;
     width: 100%;
-    border-style: solid;
     justify-content: center;
-    gap: 500px;
+    gap: 35%;
+}
+
+.date {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.img {
+    height: 200px;
+    width: 210px;
+}
+
+.select {
+    font-size: 25px;
+    color: white;
+    border-style: dotted;
+    border-width: 0px 0px 2px 0px;
+}
+
+.select:hover {
+    color: black;
 }
 
 .file {
@@ -12,11 +33,14 @@
 
 .replaceInput {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 200px;
-    border-style: solid;
+    width: 400px;
+    height: 400px;
+    background-color: #80ffb3;
+    border-color: rgba(0, 0, 0, 0.541);
+    border-style: dashed;
     border-width: 3px;
     border-radius: 10px;
 }

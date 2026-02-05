@@ -1,15 +1,12 @@
 .Nav {
     display: flex;
-
     //size
-    height: 50px;
+    height: auto;
     width: 100%;
     font-size: 30px;
     //content position
     align-items: center;
     justify-content: center;
-    //border
-
 }
 
 .NavItem {
@@ -19,5 +16,5 @@
     border-style: solid;
     border-bottom-color: #D6D6DF;
     border-width: 0px 0px 2px 0px;
-    width: 90%;
+    width: 100%;
 }

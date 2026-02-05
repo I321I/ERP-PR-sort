@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from "../main";
 import { setMainList1, setMainList2 } from "../store/listContent";
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
+import { Button, Dropdown, NavItem, NavLink } from "react-bootstrap";
+import Select from 'react-select'
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -74,26 +76,33 @@ export const InputField: React.FC = () => {
 
     return (
         <div className={`${styles.input}`}>
-            <div>
-                <div>
+            <div >
+                <div className={`${styles.date}`}>
+                    <div>檔案</div>
                     <DateSelector />
-                    <select>
+                    <select onChange={(event) => console.log(event.target.value)}>
+                        <option>📄新增檔案</option>
                         <option>001</option>
-                        <option>新增檔案</option>
                     </select>
                 </div>
-                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">選擇檔案</label>
+                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
+                    <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                    <div className={`${styles.select}`}>...選擇檔案</div>
+                </label>
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
             </div>
             <div>
                 <div>
                     <DateSelector />
-                    <select>
+                    <select >
+                        <option>📄新增檔案</option>
                         <option>001</option>
-                        <option>新增檔案</option>
                     </select>
                 </div>
-                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">選擇檔案</label>
+                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
+                    <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                    <div className={`${styles.select}`}>...選擇檔案</div>
+                </label>
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
         </div>
