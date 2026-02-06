@@ -3,12 +3,12 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import listContentReducer from './store/listContent.ts'
+import DateReducer from './store/DateState.ts'
 import type { RootState } from '@reduxjs/toolkit/query'
 
 const store = configureStore({
   reducer: {
-    listContentReducer: listContentReducer
+    DateReducer: DateReducer
   }
 })
 

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const listContent = createSlice({
-    name: "listContentState",
+const dateState = createSlice({
+    name: "DateState",
     initialState: { date1: new Map(), date2: new Map() },
     reducers: {
         setDate1: (state, action) => { state.date1 = action.payload },
@@ -9,5 +9,5 @@ const listContent = createSlice({
     }
 })
 
-export const { setDate1, setDate2} = listContent.actions;
-export default listContent.reducer
+export const { setDate1, setDate2} = dateState.actions;
+export default dateState.reducer
