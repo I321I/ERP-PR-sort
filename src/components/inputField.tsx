@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { read, readFile, utils, writeFileXLSX, type Sheet } from 'xlsx';
-import { useAppDispatch, useAppSelector } from "../main";
-import { setMainList1, setMainList2 } from "../store/listContent";
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
-import { Button, Dropdown, NavItem, NavLink } from "react-bootstrap";
-import Select from 'react-select'
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -14,26 +10,34 @@ interface objNestedJson {
 }
 
 export const InputField: React.FC = () => {
-    const List1 = useAppSelector(state => state.listContentReducer.list1ContentState)
-    const List2 = useAppSelector(state => state.listContentReducer.list2ContentState)
-    const dispatch = useAppDispatch()
+    // const List1 = useAppSelector(state => state.listContentReducer.list1ContentState)
+    // const List2 = useAppSelector(state => state.listContentReducer.list2ContentState)
+    // const dispatch = useAppDispatch()
     const [json1, setJson1] = useState<file | null>(null)
     const [json2, setJson2] = useState<file | null>(null)
+    const [select1, setSelect1] = useState<string>()
+    const [select2, setSelect2] = useState<string>()
     const handleFile1Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const temJson1: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
-            temJson1.shift()
-            setJson1(temJson1)
+            const tempJson1: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
+            tempJson1.shift()
+            setJson1(tempJson1)
         }
     }
     const handleFile2Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
-            const temJson2: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
-            temJson2.shift()
-            setJson2(temJson2)
+            const tempJson2: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
+            tempJson2.shift()
+            setJson2(tempJson2)
         }
+    }
+    const haddleSelect1Change = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSelect1(event.target.value)
+    }
+    const haddleSelect2Change = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSelect2(event.target.value)
     }
     //coding
     //1. 第二List的array：排除掉第一List有的項目，且項目不重複。資訊包含請購單號、採購單號，採購單號不需要第二"-"後的資訊。
@@ -65,37 +69,43 @@ export const InputField: React.FC = () => {
         }
         return result
     }
-    useEffect(() => {
-        const mainList1Map = json1 ? jsonToMap(json1) : new Map()
-        const mainList2Map = json2 ? jsonToMap(json2) : new Map()
-        const mainList2Difference = (mainList1Map.size !== 0 && mainList2Map.size !== 0) ? secMapDifference(mainList1Map, mainList2Map) : new Map()
-        // dispatch(setMainList1(mainList1Map))
-        // dispatch(setMainList2(mainList2Map))
-    }, [json1, json2])
 
+    const mainList1Map = json1 ? jsonToMap(json1) : new Map()
+    const mainList2Map = json2 ? jsonToMap(json2) : new Map()
+    const mainList2Difference = (mainList1Map.size !== 0 && mainList2Map.size !== 0) ? secMapDifference(mainList1Map, mainList2Map) : new Map()
+    // const SelectComponent = () => {
+    //     return <Select
+    //         value={select1}
+    //         onChange={handleSelectChange1}
+    //         options={option1}
+    //     />
+    // }
 
     return (
         <div className={`${styles.input}`}>
             <div >
-                <div className={`${styles.date}`}>
-                    <div>檔案</div>
+                <div className={`${styles.inputTitle}`}>
+                    <div className={`${styles.title}`}>檔案</div>
                     <DateSelector />
-                    <select onChange={(event) => console.log(event.target.value)}>
-                        <option>📄新增檔案</option>
+                    <select value={select1} onChange={haddleSelect1Change}>
+                        <option>新增檔案</option>
                         <option>001</option>
                     </select>
                 </div>
-                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
+                {/* {select1 === "新增檔案" && ( */}
+                    <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
                     <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
                     <div className={`${styles.select}`}>...選擇檔案</div>
                 </label>
+                 {/* )} */}
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
             </div>
             <div>
-                <div>
+                <div className={`${styles.inputTitle}`}>
+                    <div className={`${styles.title}`}>對照檔案</div>
                     <DateSelector />
-                    <select >
-                        <option>📄新增檔案</option>
+                    <select value={select2} onChange={haddleSelect2Change}>
+                        <option>新增檔案</option>
                         <option>001</option>
                     </select>
                 </div>
@@ -105,6 +115,6 @@ export const InputField: React.FC = () => {
                 </label>
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
-        </div>
+        </div >
     )
 }

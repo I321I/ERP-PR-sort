@@ -2,13 +2,12 @@
     display: flex;
     width: 100%;
     justify-content: center;
-    gap: 35%;
+    gap: 25%;
 }
 
-.date {
+.inputTitle {
     display: flex;
     flex-direction: row;
-    justify-content: center;
 }
 
 .img {
@@ -29,6 +28,12 @@
 
 .file {
     display: none;
+}
+
+.title {
+    align-content: end;
+    font-size: 19px;
+    font-weight: bold;
 }
 
 .replaceInput {
