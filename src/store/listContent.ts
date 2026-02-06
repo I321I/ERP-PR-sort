@@ -2,12 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const listContent = createSlice({
     name: "listContentState",
-    initialState: { list1ContentState: new Map(), list2ContentState: new Map() },
+    initialState: { date1: new Map(), date2: new Map() },
     reducers: {
-        setMainList1: (state, action) => { state.list1ContentState = action.payload },
-        setMainList2: (state, action) => { state.list2ContentState = action.payload }
+        setDate1: (state, action) => { state.date1 = action.payload },
+        setDate2: (state, action) => { state.date2 = action.payload }
     }
 })
 
-export const { setMainList1, setMainList2 } = listContent.actions;
+export const { setDate1, setDate2} = listContent.actions;
 export default listContent.reducer

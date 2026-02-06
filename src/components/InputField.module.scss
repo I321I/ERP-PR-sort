@@ -3,11 +3,23 @@
     width: 100%;
     justify-content: center;
     gap: 25%;
+    padding: 30px;
+}
+
+.singleInput {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
 }
 
 .inputTitle {
     display: flex;
     flex-direction: row;
+    gap: 1px;
+}
+
+.date {
+    height: 20px;
 }
 
 .img {

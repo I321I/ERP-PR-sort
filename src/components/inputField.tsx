@@ -80,10 +80,11 @@ export const InputField: React.FC = () => {
     //         options={option1}
     //     />
     // }
+    console.log(mainList1Map)
 
     return (
         <div className={`${styles.input}`}>
-            <div >
+            <div className={`${styles.singleInput}`} >
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>檔案</div>
                     <DateSelector />
@@ -93,14 +94,14 @@ export const InputField: React.FC = () => {
                     </select>
                 </div>
                 {/* {select1 === "新增檔案" && ( */}
-                    <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
+                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
                     <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
                     <div className={`${styles.select}`}>...選擇檔案</div>
                 </label>
-                 {/* )} */}
+                {/* )} */}
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
             </div>
-            <div>
+            <div className={`${styles.singleInput}`}>
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>對照檔案</div>
                     <DateSelector />
