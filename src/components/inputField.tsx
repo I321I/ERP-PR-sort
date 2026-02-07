@@ -1,7 +1,9 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { read, readFile, utils, writeFileXLSX, type Sheet } from 'xlsx';
+import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
+import { useAppDispatch, useAppSelector } from "../main";
+import { setDate1, setDate2 } from "../store/DateState";
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -10,13 +12,13 @@ interface objNestedJson {
 }
 
 export const InputField: React.FC = () => {
-    // const List1 = useAppSelector(state => state.listContentReducer.list1ContentState)
-    // const List2 = useAppSelector(state => state.listContentReducer.list2ContentState)
-    // const dispatch = useAppDispatch()
     const [json1, setJson1] = useState<file | null>(null)
     const [json2, setJson2] = useState<file | null>(null)
     const [select1, setSelect1] = useState<string>()
     const [select2, setSelect2] = useState<string>()
+    const dateState1 = useAppSelector((store) => store.DateReducer.date1)
+    const dateState2 = useAppSelector((store) => store.DateReducer.date2)
+    const dispatch = useAppDispatch()
     const handleFile1Change = async (event: any) => {
         if (event.target.files[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
@@ -80,14 +82,15 @@ export const InputField: React.FC = () => {
     //         options={option1}
     //     />
     // }
-    console.log(mainList1Map)
+    useEffect(() => {
+    }, [dateState1, dateState2])
 
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>檔案</div>
-                    <DateSelector />
+                    <DateSelector onChange={(date) => { dispatch(setDate1(date)) }} />
                     <select value={select1} onChange={haddleSelect1Change}>
                         <option>新增檔案</option>
                         <option>001</option>
@@ -104,7 +107,7 @@ export const InputField: React.FC = () => {
             <div className={`${styles.singleInput}`}>
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>對照檔案</div>
-                    <DateSelector />
+                    <DateSelector onChange={(date) => dispatch(setDate2(date))} />
                     <select value={select2} onChange={haddleSelect2Change}>
                         <option>新增檔案</option>
                         <option>001</option>
