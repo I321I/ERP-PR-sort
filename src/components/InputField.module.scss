@@ -2,7 +2,7 @@
     display: flex;
     width: 100%;
     justify-content: center;
-    gap: 22%;
+    gap: 25%;
     padding: 30px;
 }
 
@@ -15,6 +15,8 @@
 .inputTitle {
     display: flex;
     flex-direction: row;
+    height: 34px;
+    width: 400px;
     gap: 1px;
 }
 
@@ -43,9 +45,15 @@
 }
 
 .title {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-content: end;
     font-size: 22px;
     font-weight: bold;
+    white-space: nowrap;
+    width: auto;
+
 }
 
 .replaceInput {

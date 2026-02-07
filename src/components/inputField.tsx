@@ -72,7 +72,7 @@ export const InputField: React.FC = () => {
         }
         return result
     }
-    const selectDom = (idNumber: number, selectUseState: string | undefined, haddleChange: (event: ChangeEvent<HTMLSelectElement>) => void, dateState: string) => {
+    const selectDom = (selectUseState: string | undefined, haddleChange: (event: ChangeEvent<HTMLSelectElement>) => void, dateState: string) => {
         const options = [
             "新增檔案",
             "001"
@@ -82,14 +82,14 @@ export const InputField: React.FC = () => {
         })
         if (!dateState) {
             return (
-                <select id={"select" + idNumber.toString()} value={selectUseState} onChange={haddleChange} disabled >
+                <select value={selectUseState} onChange={haddleChange} disabled >
                     {optDom}
                 </select >
             )
         }
 
         return (
-            <select id={idNumber.toString()} value={selectUseState} onChange={haddleChange}  >
+            <select value={selectUseState} onChange={haddleChange}  >
                 {optDom}
             </select>
         )
@@ -113,7 +113,7 @@ export const InputField: React.FC = () => {
                     <div className={`${styles.title}`}>檔案</div>
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate1(date)) }} />
-                    {selectDom(1, select1, haddleSelect1Change, dateState1)}
+                    {selectDom(select1, haddleSelect1Change, dateState1)}
                 </div>
                 {(select1 === "新增檔案" || select1 == null && dateState1) && (
                     <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
@@ -158,7 +158,7 @@ export const InputField: React.FC = () => {
                     <div className={`${styles.title}`}>對照檔案</div>
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => dispatch(setDate2(date))} />
-                    {selectDom(2, select2, haddleSelect2Change, dateState2)}
+                    {selectDom(select2, haddleSelect2Change, dateState2)}
                 </div>
                 <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
                     <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
