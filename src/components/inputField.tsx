@@ -1,9 +1,10 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import { use, useEffect, useState, type ChangeEvent, type JSX } from "react";
 import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
 import { useAppDispatch, useAppSelector } from "../main";
 import { setDate1, setDate2 } from "../store/DateState";
+import { Table } from "react-bootstrap";
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -53,7 +54,7 @@ export const InputField: React.FC = () => {
         const map = new Map()
         for (let i = 0; i < json.length; i++) {
             map.set(
-                poRegex.exec((json[i])["採購單號"])?.[1],
+                (json[i])["請購單號"],
                 {
                     "請購單號": (json[i])["請購單號"],
                     "採購單號": poRegex.exec((json[i])["採購單號"])?.[1]
@@ -71,47 +72,93 @@ export const InputField: React.FC = () => {
         }
         return result
     }
+    const selectDom = (idNumber: number, selectUseState: string | undefined, haddleChange: (event: ChangeEvent<HTMLSelectElement>) => void, dateState: string) => {
+        const options = [
+            "新增檔案",
+            "001"
+        ]
+        const optDom = options.map((item) => {
+            return <option>{item}</option>
+        })
+        if (!dateState) {
+            return (
+                <select id={"select" + idNumber.toString()} value={selectUseState} onChange={haddleChange} disabled >
+                    {optDom}
+                </select >
+            )
+        }
 
-    const mainList1Map = json1 ? jsonToMap(json1) : new Map()
-    const mainList2Map = json2 ? jsonToMap(json2) : new Map()
-    const mainList2Difference = (mainList1Map.size !== 0 && mainList2Map.size !== 0) ? secMapDifference(mainList1Map, mainList2Map) : new Map()
-    // const SelectComponent = () => {
-    //     return <Select
-    //         value={select1}
-    //         onChange={handleSelectChange1}
-    //         options={option1}
-    //     />
-    // }
-    useEffect(() => {
-    }, [dateState1, dateState2])
-
+        return (
+            <select id={idNumber.toString()} value={selectUseState} onChange={haddleChange}  >
+                {optDom}
+            </select>
+        )
+    }
+    const map1 = json1 ? jsonToMap(json1) : new Map()
+    const map2 = json2 ? jsonToMap(json2) : new Map()
+    const map2Difference = (map1.size !== 0 && map2.size !== 0) ? secMapDifference(map1, map2) : new Map()
+    const obj1: objNestedJson = Object.fromEntries(map1)
+    const obj2: objNestedJson = Object.fromEntries(map2)
+    // console.log(obj1, Object.values(obj1).length, Object.values(obj1))
+    // console.log(map2Difference)
+    const mainList1 = Object.values(obj1).map((item, i) => {
+        return (
+            <></>
+        )
+    })
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>檔案</div>
+                    <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate1(date)) }} />
-                    <select value={select1} onChange={haddleSelect1Change}>
-                        <option>新增檔案</option>
-                        <option>001</option>
-                    </select>
+                    {selectDom(1, select1, haddleSelect1Change, dateState1)}
                 </div>
-                {/* {select1 === "新增檔案" && ( */}
-                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
-                    <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
-                    <div className={`${styles.select}`}>...選擇檔案</div>
-                </label>
-                {/* )} */}
+                {(select1 === "新增檔案" || select1 == null && dateState1) && (
+                    <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
+                        <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                        <div className={`${styles.select}`}>...選擇檔案</div>
+                    </label>
+                )}
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
+                {(select1 !== "新增檔案" && select1 != null) && (
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td colSpan={2}>Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </Table>)}
             </div>
             <div className={`${styles.singleInput}`}>
                 <div className={`${styles.inputTitle}`}>
                     <div className={`${styles.title}`}>對照檔案</div>
+                    <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => dispatch(setDate2(date))} />
-                    <select value={select2} onChange={haddleSelect2Change}>
-                        <option>新增檔案</option>
-                        <option>001</option>
-                    </select>
+                    {selectDom(2, select2, haddleSelect2Change, dateState2)}
                 </div>
                 <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
                     <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
@@ -119,6 +166,7 @@ export const InputField: React.FC = () => {
                 </label>
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
+
         </div >
     )
 }
