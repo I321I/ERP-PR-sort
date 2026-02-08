@@ -16,3 +16,14 @@
     border-radius: 10px;
     border-color: rgb(0, 0, 0);
 }
+
+.textBeforeSelected {
+    color: rgba(0, 0, 0, 0.664);
+}
+
+.calendarHeaderText {
+    display: flex;
+    height: 15px;
+    align-items: center;
+    justify-content: center;
+}
