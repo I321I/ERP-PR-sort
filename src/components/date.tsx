@@ -35,11 +35,9 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
         increaseMonth,
     }: ReactDatePickerCustomHeaderProps) => {
         const today = (JSON.stringify(new Date().getFullYear()) + "/" +
-            JSON.stringify(JSON.parse(JSON.stringify(new Date().getMonth())) + 1) + "/" +
-            JSON.stringify(new Date().getDate()))
+            JSON.stringify(JSON.parse(JSON.stringify(new Date().getMonth())) + 1))
         const calendarDate = (JSON.stringify(monthDate.getFullYear()) + "/" +
-            JSON.stringify(JSON.parse(JSON.stringify(monthDate.getMonth())) + 1) + "/" +
-            JSON.stringify(monthDate.getDate()))
+            JSON.stringify(JSON.parse(JSON.stringify(monthDate.getMonth())) + 1))
         return (
             <div>
                 <button
