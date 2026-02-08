@@ -82,14 +82,13 @@ export const InputField: React.FC = () => {
         })
         if (!dateState) {
             return (
-                <select value={selectUseState} onChange={haddleChange} disabled >
+                <select className={`${styles.selectDom}`} value={selectUseState} onChange={haddleChange} disabled >
                     {optDom}
                 </select >
             )
         }
-
         return (
-            <select value={selectUseState} onChange={haddleChange}  >
+            <select className={`${styles.selectDom}`} value={selectUseState} onChange={haddleChange}  >
                 {optDom}
             </select>
         )
@@ -160,10 +159,12 @@ export const InputField: React.FC = () => {
                     <DateSelector onChange={(date) => dispatch(setDate2(date))} />
                     {selectDom(select2, haddleSelect2Change, dateState2)}
                 </div>
-                <label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
-                    <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
-                    <div className={`${styles.select}`}>...選擇檔案</div>
-                </label>
+                {(select2 === "新增檔案" || select2 == null && dateState2) &&
+                    (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
+                        <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                        <div className={`${styles.select}`}>...選擇檔案</div>
+                    </label>
+                    )}
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
 

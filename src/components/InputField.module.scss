@@ -29,6 +29,18 @@
     width: 210px;
 }
 
+.selectDom {
+    border-radius: 10px;
+}
+
+.selectDom:hover {
+    border-color: rgb(0, 0, 0);
+}
+
+.selectDom:disabled {
+    border-color: rgba(0, 0, 0, 0.233);
+}
+
 .select {
     font-size: 25px;
     color: white;

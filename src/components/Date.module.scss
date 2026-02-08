@@ -1,3 +1,18 @@
 .date {
     height: 33px;
+    width: 150px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    background-color: white;
+    border-color: rgba(0, 0, 0, 0.541);
+}
+
+.date:hover {
+    height: 33px;
+    width: 150px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    border-color: rgb(0, 0, 0);
 }
