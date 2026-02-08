@@ -10,6 +10,13 @@ type file = objNestedJson[]
 interface objNestedJson {
     "請購單號": string;
     "採購單號": string;
+    "廠商代號": string;
+    "廠商名稱": string;
+    "品    號": string;
+    "品       名": string;
+    "規       格": string;
+    "採購數量": number;
+    "請購單位": string;
 }
 
 export const InputField: React.FC = () => {
@@ -42,13 +49,6 @@ export const InputField: React.FC = () => {
     const haddleSelect2Change = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelect2(event.target.value)
     }
-    //coding
-    //1. 第二List的array：排除掉第一List有的項目，且項目不重複。資訊包含請購單號、採購單號，採購單號不需要第二"-"後的資訊。
-    //2. 第二List的次array：
-    //      資訊包含：採購單號、廠商名稱、品號、品名、規格、請購數量、請購單位。不包含：品號是H23010001, H23020001的項目。
-    //          {採購單號, the others}。品號是排除項目；採購單號=1；採購單號>1
-    //              判斷品號，map下for迴圈跑採購單號
-    //樣式
     const poRegex = /(.+)(-.+)/
     const jsonToMap = (json: file) => {
         const map = new Map()
@@ -93,18 +93,50 @@ export const InputField: React.FC = () => {
             </select>
         )
     }
+    //coding
+    //1. 第二List的array：排除掉第一List有的項目，且項目不重複。資訊包含請購單號、採購單號，採購單號不需要第二"-"後的資訊。
+    //2. 第二List的次array：
+    //      資訊包含：請購單號、採購單號、廠商名稱、品號、品名、規格、請購數量、請購單位。不包含：品號是H23010001, H23020001的項目。
+    //          {採購單號, the others}。品號是排除項目；採購單號=1；採購單號>1
+    //              判斷品號，map下for迴圈跑採購單號
+    //樣式
+    const toMajorListMap = (json: file) => {
+        const map = new Map()
+        for (let i = 0; i < json.length; i++) {
+            if ((json[i])["品    號"] === "H23010001") continue
+            if ((json[i])["品    號"] === "H23020001") continue
+            map.set(
+                (json[i])["採購單號"],
+                {
+                    "請購單號": (json[i])["請購單號"],
+                    "廠商": (json[i])["廠商名稱"] + (json[i])["廠商代號"],
+                    "品號": (json[i])["品    號"],
+                    "品名": (json[i])["品       名"],
+                    "規格": (json[i])["規       格"],
+                    "採購數量": (json[i])["採購數量"],
+                    "請購單位": (json[i])["請購單位"],
+                })
+        }
+        return map
+    }
+    const mapToItem = (map: Map<string, object>) => JSON.stringify(Object.fromEntries(map))
     const map1 = json1 ? jsonToMap(json1) : new Map()
     const map2 = json2 ? jsonToMap(json2) : new Map()
     const map2Difference = (map1.size !== 0 && map2.size !== 0) ? secMapDifference(map1, map2) : new Map()
-    const obj1: objNestedJson = Object.fromEntries(map1)
-    const obj2: objNestedJson = Object.fromEntries(map2)
-    // console.log(obj1, Object.values(obj1).length, Object.values(obj1))
-    // console.log(map2Difference)
-    const mainList1 = Object.values(obj1).map((item, i) => {
-        return (
-            <></>
-        )
-    })
+    const majorMap1 = json1 ? toMajorListMap(json1) : new Map()
+    const majorMap2 = json2 ? toMajorListMap(json2) : new Map()
+    const beingSavedData1 = mapToItem(map1)
+    const beingSavedData2 = mapToItem(map2)
+    const beingSavedMajor1 = mapToItem(majorMap1)
+    const beingSavedMajor2 = mapToItem(majorMap2)
+
+    console.log(majorMap1)
+    localStorage.clear()
+
+    //日期: {key:{資料}}
+    //  key組成:(數字)+(1.mainList 2. majorList)
+    //讀取 選日期->是否有key->無->建立->重新確認是否有key
+    //                     ->有->最大的key->讀其main和major
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
