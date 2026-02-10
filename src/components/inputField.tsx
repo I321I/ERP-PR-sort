@@ -1,4 +1,4 @@
-import { use, useEffect, useState, type ChangeEvent, type JSX } from "react";
+import { useState, type ChangeEvent } from "react";
 import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
@@ -27,16 +27,16 @@ export const InputField: React.FC = () => {
     const dateState1 = useAppSelector((store) => store.DateReducer.date1)
     const dateState2 = useAppSelector((store) => store.DateReducer.date2)
     const dispatch = useAppDispatch()
-    const handleFile1Change = async (event: any) => {
-        if (event.target.files[0]) {
+    const handleFile1Change = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (event?.target?.files?.[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
             const tempJson1: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             tempJson1.shift()
             setJson1(tempJson1)
         }
     }
-    const handleFile2Change = async (event: any) => {
-        if (event.target.files[0]) {
+    const handleFile2Change = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (event?.target?.files?.[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
             const tempJson2: file = utils.sheet_to_json(read(toArrayBuffer).Sheets[read(toArrayBuffer).SheetNames[0]])
             tempJson2.shift()
@@ -65,9 +65,9 @@ export const InputField: React.FC = () => {
         }))
         return mapSort
     }
-    const secMapDifference = (map1: Map<any, any>, map2: Map<any, any>) => {
+    const secMapDifference = (map1: Map<string, objNestedJson>, map2: Map<string, objNestedJson>) => {
         const result = new Map(map2)
-        for (let [key] of map1) {
+        for (const [key] of map1) {
             if (result.has(key)) { result.delete(key) }
         }
         return result
@@ -122,12 +122,17 @@ export const InputField: React.FC = () => {
     const mapToItem = (map: Map<string, object>) => JSON.stringify(Object.fromEntries(map))
     const map1 = json1 ? jsonToMap(json1) : new Map()
     const map2 = json2 ? jsonToMap(json2) : new Map()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const map2Difference = (map1.size !== 0 && map2.size !== 0) ? secMapDifference(map1, map2) : new Map()
     const majorMap1 = json1 ? toMajorListMap(json1) : new Map()
     const majorMap2 = json2 ? toMajorListMap(json2) : new Map()
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedData1 = mapToItem(map1)
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedData2 = mapToItem(map2)
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor1 = mapToItem(majorMap1)
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor2 = mapToItem(majorMap2)
 
     console.log(majorMap1)

@@ -2,7 +2,7 @@ import React, { forwardRef, useState } from "react";
 import DatePicker, { type ReactDatePickerCustomDayNameProps, type ReactDatePickerCustomHeaderProps } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './Date.module.scss'
-import { addDays, addMonths, getMonth, setMonth } from "date-fns";
+import { addMonths } from "date-fns";
 
 interface DateSelector {
     onChange: (date: string) => void

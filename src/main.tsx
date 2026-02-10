@@ -4,7 +4,6 @@ import App from './App.tsx'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import DateReducer from './store/DateState.ts'
-import type { RootState } from '@reduxjs/toolkit/query'
 
 const store = configureStore({
   reducer: {
