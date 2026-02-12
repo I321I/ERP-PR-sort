@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
@@ -20,7 +20,6 @@ interface objNestedJson {
 }
 
 export const InputField: React.FC = () => {
-
     const [json1, setJson1] = useState<file | null>(null)
     const [json2, setJson2] = useState<file | null>(null)
     const [select1, setSelect1] = useState<string>()
@@ -32,19 +31,21 @@ export const InputField: React.FC = () => {
         let boolean: boolean = false
         const regex = /(.+)-(.+)-(.+)/
         const keyArray: string[] = []
+        const mainIndexArray: number[] = []
         let lastKeyNumber = undefined
-        if (dateState == null) return { dateState1, boolean, keyArray, lastKeyNumber }
+        if (dateState == null) return { dateState, boolean, mainIndArr: mainIndexArray, keyArray, lastKeyNumber }
         for (let i = 0; i < localStorage.length; i++) {
-            if (!localStorage.key(i)?.includes(dateState)) continue
+            if (localStorage.key(i)?.includes(`${dateState}-`) === false) continue
             const key = localStorage.key(i)
-            if (key && regex.exec(key)?.[3] === "main") keyArray.push((regex.exec(key)?.[2]) as string)
+            if (key && regex.exec(key)?.[3] === "main") { mainIndexArray.push(i); keyArray.push((regex.exec(key)?.[2]) as string) }
             boolean = true
+
         }
         keyArray.sort()
         lastKeyNumber = keyArray.at(-1)
-        const result = { dateState1, boolean, keyArray, lastKeyNumber }
-        return result
+        return { dateState, boolean, mainIndArr: mainIndexArray, keyArray, lastKeyNumber }
     }
+
     const handleFile1Change = async (event: ChangeEvent<HTMLInputElement>) => {
         if (event?.target?.files?.[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
@@ -67,7 +68,6 @@ export const InputField: React.FC = () => {
     const handleSelect2Change = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelect2(event.target.value)
     }
-
     const handdleDateChange = (date: string | null, setSelect: React.Dispatch<React.SetStateAction<string | undefined>>) => {
         if (checkSavedKey(date).boolean) setSelect(checkSavedKey(date).lastKeyNumber)
         else if (date == null) setSelect(undefined)
@@ -156,22 +156,38 @@ export const InputField: React.FC = () => {
     const beingSavedMajor1 = majorMap1.size ? mapToItem(majorMap1) : null
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor2 = majorMap2.size ? mapToItem(majorMap2) : null
+    useEffect(() => {
+        if (dateState1) {
+            if (checkSavedKey(dateState1).boolean === false) {
+                localStorage.setItem(`${dateState1}-001-main`, beingSavedData1 as string)
+                localStorage.setItem(`${dateState1}-001-major`, beingSavedMajor1 as string)
+                handdleDateChange(dateState1, setSelect1)
+            }
+            else {
+                const idx = (checkSavedKey(dateState1).mainIndArr)?.length + 1
+                if (idx.toString().length === 1) {
+                    localStorage.setItem(`${dateState1}-00${idx}-main`, beingSavedData1 as string)
+                    localStorage.setItem(`${dateState1}-00${idx}-major`, beingSavedMajor1 as string)
+                }
+                if (idx.toString().length === 2) {
+                    localStorage.setItem(`${dateState1}-0${idx}-main`, beingSavedData1 as string)
+                    localStorage.setItem(`${dateState1}-0${idx}-major`, beingSavedMajor1 as string)
+                }
+                if (idx.toString().length === 3) {
+                    localStorage.setItem(`${dateState1}-${idx}-main`, beingSavedData1 as string)
+                    localStorage.setItem(`${dateState1}-${idx}-major`, beingSavedMajor1 as string)
+                }
+                handdleDateChange(dateState1, setSelect1)
+            }
+        }
 
-    // console.log(beingSavedData1 === null, beingSavedMajor1 === null)
-
+    }, [json1, json2])
     //日期: {key:{資料}}
     //  key組成:(日期)-(數字)-(1.main 2. major)
     //讀取 選日期->是否有key->無->建立->重新確認是否有key
     //                     ->有->最大的key->讀其main和major
-
-    localStorage.setItem("2026/2/1", "123")
-    localStorage.setItem("2026/2/1-001-main", "456")
-    // console.log(localStorage.getItem("2026/2/1"))
-    // localStorage.clear()
-
-    // const selectOptions = (array) => {
-    //     return ()
-    // }
+    //存檔時機，換檔案時
+    //何時讀檔，換檔案後、換時間，每次重新渲染，前提：有時間
 
     return (
         <div className={`${styles.input}`}>
