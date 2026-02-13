@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import React, { useEffect, useState, type ChangeEvent } from "react";
 import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
@@ -45,7 +45,6 @@ export const InputField: React.FC = () => {
         lastKeyNumber = keyArray.at(-1)
         return { dateState, boolean, mainIndArr: mainIndexArray, keyArray, lastKeyNumber }
     }
-
     const handleFile1Change = async (event: ChangeEvent<HTMLInputElement>) => {
         if (event?.target?.files?.[0]) {
             const toArrayBuffer = await event.target.files[0]?.arrayBuffer()
@@ -84,8 +83,8 @@ export const InputField: React.FC = () => {
                     "採購單號": poRegex.exec((json[i])["採購單號"])?.[1]
                 })
         }
-        const mapSort = new Map([...map].sort((a, b) => {
-            return a[0].localeCompare(b[0])
+        const mapSort = new Map([...map].sort((current, next) => {
+            return current[0].localeCompare(next[0])
         }))
         return mapSort
     }
@@ -156,39 +155,71 @@ export const InputField: React.FC = () => {
     const beingSavedMajor1 = majorMap1.size ? mapToItem(majorMap1) : null
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor2 = majorMap2.size ? mapToItem(majorMap2) : null
-    useEffect(() => {
-        if (dateState1) {
-            if (checkSavedKey(dateState1).boolean === false) {
-                localStorage.setItem(`${dateState1}-001-main`, beingSavedData1 as string)
-                localStorage.setItem(`${dateState1}-001-major`, beingSavedMajor1 as string)
-                handdleDateChange(dateState1, setSelect1)
-            }
-            else {
-                const idx = (checkSavedKey(dateState1).mainIndArr)?.length + 1
-                if (idx.toString().length === 1) {
-                    localStorage.setItem(`${dateState1}-00${idx}-main`, beingSavedData1 as string)
-                    localStorage.setItem(`${dateState1}-00${idx}-major`, beingSavedMajor1 as string)
-                }
-                if (idx.toString().length === 2) {
-                    localStorage.setItem(`${dateState1}-0${idx}-main`, beingSavedData1 as string)
-                    localStorage.setItem(`${dateState1}-0${idx}-major`, beingSavedMajor1 as string)
-                }
-                if (idx.toString().length === 3) {
-                    localStorage.setItem(`${dateState1}-${idx}-main`, beingSavedData1 as string)
-                    localStorage.setItem(`${dateState1}-${idx}-major`, beingSavedMajor1 as string)
-                }
-                handdleDateChange(dateState1, setSelect1)
-            }
+    const saveDataWhetherExists = (dateState: string | null, beingSavedData: string | null, beingSavedMajor: string | null) => {
+        if (checkSavedKey(dateState).boolean === false) {
+            localStorage.setItem(`${dateState}-001-main`, beingSavedData as string)
+            localStorage.setItem(`${dateState}-001-major`, beingSavedMajor as string)
+            handdleDateChange(dateState, setSelect1)
         }
-
+        else {
+            const idx = (checkSavedKey(dateState).mainIndArr)?.length + 1
+            if (idx.toString().length === 1) {
+                localStorage.setItem(`${dateState}-00${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-00${idx}-major`, beingSavedMajor as string)
+            }
+            if (idx.toString().length === 2) {
+                localStorage.setItem(`${dateState}-0${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-0${idx}-major`, beingSavedMajor as string)
+            }
+            if (idx.toString().length === 3) {
+                localStorage.setItem(`${dateState}-${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-${idx}-major`, beingSavedMajor as string)
+            }
+            handdleDateChange(dateState, setSelect1)
+        }
+    }
+    useEffect(() => {
+        if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1)
+        if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2)
     }, [json1, json2])
+    const list = (dateState: string | null, select: string | undefined) => {
+        if (dateState == null || select == null) return
+        const toMap = (json: string): Map<string, object> => new Map(Object.entries(JSON.parse(json)))
+        const mainMap: Map<string, object> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
+        const majorMap: Map<string, object> = toMap(localStorage.getItem(`${dateState}-${select}-major`) as string)
+        const List = ({ map, major = false }: { map: Map<string, object>, major?: boolean }) => {
+            const columnsName = Object.keys([...map][0][1]).map((namesObject) => namesObject)
+            const listHead = <thead><tr>{columnsName.map((name) => <th>{name}</th>)}</tr></thead>
+            const listBody =
+                major === false
+                    ? <tbody>{[...map].map((item) => {
+                        return (
+                            <tr role="button" data-toggle="collapse" data-target={`#${(item[1] as Record<string, unknown>)["請購單號"]}`}>{columnsName.map((columnName: string) => {
+                                return (
+                                    <td>
+                                        {`${(item[1] as Record<string, unknown>)[columnName]}`}
+                                    </td>)
+                            })
+                            }</tr>)
+                    })}
+                    </tbody>
+                    : <></>
+            return { columnsName, listHead, listBody }
+        }
+        return (
+            <Table striped bordered hover>
+                {List({ map: mainMap }).listHead}
+                {List({ map: mainMap }).listBody}
+                <div className="collapse" id="H311-20251212003">123</div>
+            </Table >
+        )
+    }
     //日期: {key:{資料}}
     //  key組成:(日期)-(數字)-(1.main 2. major)
     //讀取 選日期->是否有key->無->建立->重新確認是否有key
     //                     ->有->最大的key->讀其main和major
     //存檔時機，換檔案時
     //何時讀檔，換檔案後、換時間，每次重新渲染，前提：有時間
-
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
@@ -205,36 +236,13 @@ export const InputField: React.FC = () => {
                     </label>
                 )}
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
-                {(select1 !== "新增檔案" && select1 != null) && (
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td colSpan={2}>Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
-                    </Table>)}
+                {(select1 !== "新增檔案" && select1 != null) &&
+                    list(dateState1, select1)}
+                <div className="collapse" id="collapseExample">
+                    <div className="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                    </div>
+                </div>
             </div>
             <div className={`${styles.singleInput}`}>
                 <div className={`${styles.inputTitle}`}>
@@ -251,7 +259,6 @@ export const InputField: React.FC = () => {
                     )}
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
-
         </div >
     )
 }
