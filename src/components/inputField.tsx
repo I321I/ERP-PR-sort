@@ -4,7 +4,7 @@ import { DateSelector } from "./Date";
 import styles from './InputField.module.scss'
 import { useAppDispatch, useAppSelector } from "../main";
 import { setDate1, setDate2 } from "../store/DateState";
-import { Table } from "react-bootstrap";
+import { List } from "./List";
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -15,7 +15,7 @@ interface objNestedJson {
     "品    號": string;
     "品       名": string;
     "規       格": string;
-    "採購數量": number;
+    "請購數量": number;
     "請購單位": string;
 }
 
@@ -39,7 +39,6 @@ export const InputField: React.FC = () => {
             const key = localStorage.key(i)
             if (key && regex.exec(key)?.[3] === "main") { mainIndexArray.push(i); keyArray.push((regex.exec(key)?.[2]) as string) }
             boolean = true
-
         }
         keyArray.sort()
         lastKeyNumber = keyArray.at(-1)
@@ -134,8 +133,8 @@ export const InputField: React.FC = () => {
                     "品號": (json[i])["品    號"],
                     "品名": (json[i])["品       名"],
                     "規格": (json[i])["規       格"],
-                    "採購數量": (json[i])["採購數量"],
-                    "請購單位": (json[i])["請購單位"],
+
+
                 })
         }
         return map
@@ -147,32 +146,29 @@ export const InputField: React.FC = () => {
     const map2Difference = (map1.size !== 0 && map2.size !== 0) ? secMapDifference(map1, map2) : new Map()
     const majorMap1 = json1 ? toMajorListMap(json1) : new Map()
     const majorMap2 = json2 ? toMajorListMap(json2) : new Map()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedData1 = map1.size !== 0 ? mapToItem(map1) : null
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedData2 = map2.size ? mapToItem(map2) : null
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor1 = majorMap1.size ? mapToItem(majorMap1) : null
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beingSavedMajor2 = majorMap2.size ? mapToItem(majorMap2) : null
     const saveDataWhetherExists = (dateState: string | null, beingSavedData: string | null, beingSavedMajor: string | null) => {
+        if (beingSavedData == null) return
         if (checkSavedKey(dateState).boolean === false) {
-            localStorage.setItem(`${dateState}-001-main`, beingSavedData as string)
+            localStorage.setItem(`${dateState}-001-main`, beingSavedData)
             localStorage.setItem(`${dateState}-001-major`, beingSavedMajor as string)
             handdleDateChange(dateState, setSelect1)
         }
         else {
             const idx = (checkSavedKey(dateState).mainIndArr)?.length + 1
             if (idx.toString().length === 1) {
-                localStorage.setItem(`${dateState}-00${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-00${idx}-main`, beingSavedData)
                 localStorage.setItem(`${dateState}-00${idx}-major`, beingSavedMajor as string)
             }
             if (idx.toString().length === 2) {
-                localStorage.setItem(`${dateState}-0${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-0${idx}-main`, beingSavedData)
                 localStorage.setItem(`${dateState}-0${idx}-major`, beingSavedMajor as string)
             }
             if (idx.toString().length === 3) {
-                localStorage.setItem(`${dateState}-${idx}-main`, beingSavedData as string)
+                localStorage.setItem(`${dateState}-${idx}-main`, beingSavedData)
                 localStorage.setItem(`${dateState}-${idx}-major`, beingSavedMajor as string)
             }
             handdleDateChange(dateState, setSelect1)
@@ -182,38 +178,6 @@ export const InputField: React.FC = () => {
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1)
         if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2)
     }, [json1, json2])
-    const list = (dateState: string | null, select: string | undefined) => {
-        if (dateState == null || select == null) return
-        const toMap = (json: string): Map<string, object> => new Map(Object.entries(JSON.parse(json)))
-        const mainMap: Map<string, object> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
-        const majorMap: Map<string, object> = toMap(localStorage.getItem(`${dateState}-${select}-major`) as string)
-        const List = ({ map, major = false }: { map: Map<string, object>, major?: boolean }) => {
-            const columnsName = Object.keys([...map][0][1]).map((namesObject) => namesObject)
-            const listHead = <thead><tr>{columnsName.map((name) => <th>{name}</th>)}</tr></thead>
-            const listBody =
-                major === false
-                    ? <tbody>{[...map].map((item) => {
-                        return (
-                            <tr role="button" data-toggle="collapse" data-target={`#${(item[1] as Record<string, unknown>)["請購單號"]}`}>{columnsName.map((columnName: string) => {
-                                return (
-                                    <td>
-                                        {`${(item[1] as Record<string, unknown>)[columnName]}`}
-                                    </td>)
-                            })
-                            }</tr>)
-                    })}
-                    </tbody>
-                    : <></>
-            return { columnsName, listHead, listBody }
-        }
-        return (
-            <Table striped bordered hover>
-                {List({ map: mainMap }).listHead}
-                {List({ map: mainMap }).listBody}
-                <div className="collapse" id="H311-20251212003">123</div>
-            </Table >
-        )
-    }
     //日期: {key:{資料}}
     //  key組成:(日期)-(數字)-(1.main 2. major)
     //讀取 選日期->是否有key->無->建立->重新確認是否有key
@@ -237,12 +201,7 @@ export const InputField: React.FC = () => {
                 )}
                 <input className={`${styles.file}`} type="file" id="uploadExcel1" accept=".xlsx" onChange={handleFile1Change}></input>
                 {(select1 !== "新增檔案" && select1 != null) &&
-                    list(dateState1, select1)}
-                <div className="collapse" id="collapseExample">
-                    <div className="card card-body">
-                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-                    </div>
-                </div>
+                    <List dateState={dateState1} select={select1}></List>}
             </div>
             <div className={`${styles.singleInput}`}>
                 <div className={`${styles.inputTitle}`}>
@@ -257,6 +216,8 @@ export const InputField: React.FC = () => {
                         <div className={`${styles.select}`}>...選擇檔案</div>
                     </label>
                     )}
+                {(select2 !== "新增檔案" && select2 != null) &&
+                    <List dateState={dateState2} select={select2}></List>}
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
         </div >
