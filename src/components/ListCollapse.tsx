@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Collapse, Table } from 'react-bootstrap'
+import styles from './List.module.scss'
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 interface ListCollapseProps {
     mainListObject: Record<string, string>
@@ -10,15 +12,24 @@ interface ListCollapseProps {
 export const ListCollapse: React.FC<ListCollapseProps> = ({ mainListObject, majorMap, MainColumnsName: columnsName }) => {
     const [open, setOpen] = useState(false)
     console.log(open)
-    const main = (mainListItem: Record<string, string>, columnsNameArray: string[]) => {
+    const main = (mainListItem: Record<string, string>, majorMap: Map<string, Record<string, string>>, columnsNameArray: string[]) => {
         return (
             <tr role="button" onClick={() => { setOpen(!open); console.log(123) }}>{columnsNameArray.map((columnName: string) => {
+                if (columnName === columnsNameArray.at(-1) && [...majorMap].map(([, object]) => object["請購單號"] === mainListItem["請購單號"]).includes(true)) {
+                    return (
+                        <td className={`${styles.lastMainTd}`}>
+                            {`${mainListItem[columnName]}`}
+                            <i className={`${styles.chevronDown} bi bi-chevron-down`}></i>
+                        </td>
+                    )
+                }
                 return (
-                    <td>
+                    <td >
                         {`${mainListItem[columnName]}`}
                     </td>)
-            })}
-            </tr>
+            })
+            }
+            </tr >
         )
     }
     const major = (majorListMap: Map<string, Record<string, string>>, mainObject: Record<string, string>) => {
@@ -26,7 +37,7 @@ export const ListCollapse: React.FC<ListCollapseProps> = ({ mainListObject, majo
         const majorHead = <thead><tr >{majorColumnsNames.map((name) => <th>{name}</th>)}</tr></thead >
         if ([...majorListMap].filter(([, item]) => item["請購單號"] === mainObject["請購單號"]).length === 0) return <></>
         return (
-            <Table>
+            <Table striped className={`${styles.transitionDuration}`} >
                 {majorHead}
                 < tbody >
                     {[...majorListMap].filter(([, item]) => item["請購單號"] === mainObject["請購單號"]).map(([, item]) => {
@@ -47,7 +58,7 @@ export const ListCollapse: React.FC<ListCollapseProps> = ({ mainListObject, majo
     }
     return (
         <>
-            {main(mainListObject, columnsName)}
+            {main(mainListObject, majorMap, columnsName)}
             <tr>
                 <td colSpan={columnsName.length} style={{ padding: 0, border: 0 }}>
                     <Collapse in={open}>

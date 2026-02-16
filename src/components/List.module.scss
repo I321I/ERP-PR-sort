@@ -1,3 +1,22 @@
-.fixed_table_container {
-margin-bottom: -5px;
+.table{
+    width: 100%;
+    height: 90%;
+    overflow-y: scroll;
+}
+.transitionDuration {
+    transition-duration: 0ms;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.td {}
+
+.lastMainTd {
+    display: flex;
+    justify-content: space-between;
+    border-left-style: none;
+}
+
+.chevronDown {
+    font-size: large;
 }

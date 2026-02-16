@@ -1,5 +1,6 @@
 import { Table } from "react-bootstrap"
 import { ListCollapse } from "./ListCollapse"
+import styles from './List.module.scss'
 
 interface List {
     dateState: string | null,
@@ -26,9 +27,11 @@ export const List: React.FC<List> = ({ dateState, select }) => {
         return { columnsName: MainColumnsName, listHead, listBody }
     }
     return (
-        <Table striped bordered hover >
-            {list({ mainMap: mainMap, majorMap: majorMap }).listHead}
-            {list({ mainMap: mainMap, majorMap: majorMap }).listBody}
-        </Table >
+        <div className={`${styles.table}`}>
+            <Table bordered hover >
+                {list({ mainMap: mainMap, majorMap: majorMap }).listHead}
+                {list({ mainMap: mainMap, majorMap: majorMap }).listBody}
+            </Table >
+        </div>
     )
 }
