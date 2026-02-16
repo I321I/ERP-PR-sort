@@ -13,7 +13,7 @@ interface List {
 export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateStateA = null, selectA = undefined }) => {
     if (!((bNotA === true && typeof dateStateA === "string" && typeof selectA === "string")
         || (bNotA === false && dateStateA == null && selectA == null))) return
-    if (dateState == null || select == null) return
+    if (dateState == null || select == null || select ==="新增檔案") return
     const toMap = (json: string): Map<string, Record<string, string>> => new Map(Object.entries(JSON.parse(json)))
     const mainMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
     const majorMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-major`) as string)
@@ -38,7 +38,7 @@ export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateSta
             </div>
         )
     }
-    else {
+    else if (typeof dateStateA === "string" && typeof selectA === "string") {
         const mainMapA: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateStateA}-${selectA}-main`) as string)
         const bNotAMap = (mapA: Map<string, Record<string, string>>, mapB: Map<string, Record<string, string>>) => {
             const result = new Map(mapB)
@@ -61,4 +61,5 @@ export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateSta
             </div>
         )
     }
+    else return
 }
