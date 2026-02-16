@@ -87,13 +87,6 @@ export const InputField: React.FC = () => {
         }))
         return mapSort
     }
-    const secMapDifference = (map1: Map<string, objNestedJson>, map2: Map<string, objNestedJson>) => {
-        const result = new Map(map2)
-        for (const [key] of map1) {
-            if (result.has(key)) { result.delete(key) }
-        }
-        return result
-    }
     const selectDom = (selectUseState: string | undefined, optionsArray: string[], haddleChange: (event: ChangeEvent<HTMLSelectElement>) => void, dateState: string | null) => {
         const options = optionsArray
         optionsArray.push("新增檔案")
@@ -142,20 +135,18 @@ export const InputField: React.FC = () => {
     const mapToItem = (map: Map<string, object>) => JSON.stringify(Object.fromEntries(map))
     const map1 = json1 ? jsonToMap(json1) : new Map()
     const map2 = json2 ? jsonToMap(json2) : new Map()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const map2Difference = (map1.size !== 0 && map2.size !== 0) ? secMapDifference(map1, map2) : new Map()
     const majorMap1 = json1 ? toMajorListMap(json1) : new Map()
     const majorMap2 = json2 ? toMajorListMap(json2) : new Map()
     const beingSavedData1 = map1.size !== 0 ? mapToItem(map1) : null
     const beingSavedData2 = map2.size ? mapToItem(map2) : null
     const beingSavedMajor1 = majorMap1.size ? mapToItem(majorMap1) : null
     const beingSavedMajor2 = majorMap2.size ? mapToItem(majorMap2) : null
-    const saveDataWhetherExists = (dateState: string | null, beingSavedData: string | null, beingSavedMajor: string | null) => {
+    const saveDataWhetherExists = (dateState: string | null, beingSavedData: string | null, beingSavedMajor: string | null, setSelect: typeof setSelect1 | typeof setSelect2) => {
         if (beingSavedData == null) return
         if (checkSavedKey(dateState).boolean === false) {
             localStorage.setItem(`${dateState}-001-main`, beingSavedData)
             localStorage.setItem(`${dateState}-001-major`, beingSavedMajor as string)
-            handdleDateChange(dateState, setSelect1)
+            handdleDateChange(dateState, setSelect)
         }
         else {
             const idx = (checkSavedKey(dateState).mainIndArr)?.length + 1
@@ -171,12 +162,12 @@ export const InputField: React.FC = () => {
                 localStorage.setItem(`${dateState}-${idx}-main`, beingSavedData)
                 localStorage.setItem(`${dateState}-${idx}-major`, beingSavedMajor as string)
             }
-            handdleDateChange(dateState, setSelect1)
+            handdleDateChange(dateState, setSelect)
         }
     }
     useEffect(() => {
-        if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1)
-        if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2)
+        if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
+        if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2, setSelect2)
     }, [json1, json2])
     //日期: {key:{資料}}
     //  key組成:(日期)-(數字)-(1.main 2. major)
@@ -218,6 +209,7 @@ export const InputField: React.FC = () => {
                     )}
                 {(select2 !== "新增檔案" && select2 != null) &&
                     <List dateState={dateState2} select={select2}></List>}
+                <List dateState={dateState2} select={select2} bNotA={true} dateStateA={dateState1} selectA={select1}></List>
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
         </div >

@@ -11,10 +11,9 @@ interface ListCollapseProps {
 
 export const ListCollapse: React.FC<ListCollapseProps> = ({ mainListObject, majorMap, MainColumnsName: columnsName }) => {
     const [open, setOpen] = useState(false)
-    console.log(open)
     const main = (mainListItem: Record<string, string>, majorMap: Map<string, Record<string, string>>, columnsNameArray: string[]) => {
         return (
-            <tr role="button" onClick={() => { setOpen(!open); console.log(123) }}>{columnsNameArray.map((columnName: string) => {
+            <tr role="button" onClick={() => { setOpen(!open)}}>{columnsNameArray.map((columnName: string) => {
                 if (columnName === columnsNameArray.at(-1) && [...majorMap].map(([, object]) => object["請購單號"] === mainListItem["請購單號"]).includes(true)) {
                     return (
                         <td className={`${styles.lastMainTd}`}>
