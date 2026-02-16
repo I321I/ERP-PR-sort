@@ -14,7 +14,7 @@ export const List: React.FC<List> = ({ dateState, select }) => {
     const majorMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-major`) as string)
     const list = ({ mainMap, majorMap }: { mainMap: Map<string, Record<string, string>>, majorMap: Map<string, Record<string, string>> }) => {
         const MainColumnsName = Object.keys([...mainMap][0][1]).map((namesObject) => namesObject)
-        const listHead = <thead><tr >{MainColumnsName.map((name) => <th>{name}</th>)}</tr></thead >
+        const listHead = <thead><tr>{MainColumnsName.map((name) => <th>{name}</th>)}</tr></thead>
         const listBody =
             <tbody >{[...mainMap].map(([, item]) => {
                 return (
