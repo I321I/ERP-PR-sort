@@ -69,8 +69,45 @@ export const InputField: React.FC = () => {
     const handleSelect2Change = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelect2(event.target.value)
     }
+    const [switchState, setSwitchState] = useState(false)
+    const switchDom = (select: typeof select2, stateOfSwitch: typeof switchState, setSwitch: typeof setSwitchState) => {
+        if (select == null || select === "新增檔案") {
+            if (switchState) setSwitchState(false)
+            return (
+                <section className={`${styles.switch}`} >
+                    <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">列表</label>
+                    <Form >
+                        <Form.Check
+                            type="switch"
+                            id="switch"
+                            onChange={(event) => { setSwitchState(event.target.checked) }}
+                            disabled
+                            checked={switchState}
+                        />
+                    </Form>
+                </section >)
+        }
+        return (
+            <section className={`${styles.switch}`} >
+                {stateOfSwitch === false
+                    ? <label className={`${styles.switchLabel}`} htmlFor="switch">原始列表</label>
+                    : <label className={`${styles.switchLabel}`} htmlFor="switch">對照列表</label>}
+                <Form>
+                    <Form.Check
+                        type="switch"
+                        id="switch"
+                        onChange={(event) => { setSwitch(event.target.checked) }}
+                        checked={switchState}
+                    />
+                </Form>
+            </section >)
+    }
     const handdleDateChange = (date: string | null, setSelect: React.Dispatch<React.SetStateAction<string | undefined>>) => {
-        if (checkSavedKey(date).boolean) setSelect(checkSavedKey(date).lastKeyNumber)
+        if (checkSavedKey(date).boolean) {
+            setSelect(checkSavedKey(date).lastKeyNumber);
+            if (setSelect === setSelect1 && typeof select2 === "string" && select2 !== "新增檔案") setSwitchState(true)
+            if (setSelect === setSelect2 && typeof select1 === "string" && select1 !== "新增檔案") setSwitchState(true)
+        }
         else if (date == null) setSelect(undefined)
         else if (typeof date === "string") setSelect("新增檔案")
     }
@@ -169,39 +206,11 @@ export const InputField: React.FC = () => {
         }
     }
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
         if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2, setSelect2)
     }, [json1, json2])
-    const [switchOption, setSwitchOption] = useState(false)
-    const switchDom = (select: typeof select2) => {
-        if (select == null || select === "新增檔案") {
-            return (
-                <section className={`${styles.switch}`} >
-                    <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">原始</label>
-                    <Form >
-                        <Form.Check
-                            type="switch"
-                            id="switch"
-                            onChange={(event) => { setSwitchOption(event.target.checked) }}
-                            disabled
-                        />
-                    </Form>
-                </section >)
-        }
-        return (
-            <section className={`${styles.switch}`} >
-                <label className={`${styles.switchLabel}`} htmlFor="switch">原始</label>
-                <Form>
-                    <Form.Check
-                        type="switch"
-                        id="switch"
-                        onChange={(event) => { setSwitchOption(event.target.checked) }}
-                    />
-                </Form>
-            </section >)
-    }
-    const switchChecked = (document.getElementById('switch') as HTMLInputElement)?.checked;
-    console.log(switchChecked)
+
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
@@ -227,7 +236,7 @@ export const InputField: React.FC = () => {
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate2(date)); handdleDateChange(date, setSelect2) }} />
                     {selectDom(select2, checkSavedKey(dateState2).keyArray, handleSelect2Change, dateState2)}
-                    {switchDom(select2)}
+                    {switchDom(select2, switchState, setSwitchState)}
                 </div>
                 {(select2 === "新增檔案" || select2 == null && dateState2) &&
                     (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
@@ -235,9 +244,9 @@ export const InputField: React.FC = () => {
                         <div className={`${styles.select}`}>...選擇檔案</div>
                     </label>
                     )}
-                {(select2 !== "新增檔案" && select2 != null && switchOption === false) &&
+                {(select2 !== "新增檔案" && select2 != null && switchState === false) &&
                     <List dateState={dateState2} select={select2}></List>}
-                <List dateState={dateState2} select={select2} bNotA={true} dateStateA={dateState1} selectA={select1}></List>
+                {switchState && <List dateState={dateState2} select={select2} bNotA={true} dateStateA={dateState1} selectA={select1}></List>}
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>
             </div>
         </div >
