@@ -12,8 +12,8 @@ interface List {
 }
 
 export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateStateA = null, selectA = undefined }) => {
-    if (!((bNotA === true && typeof dateStateA === "string" && typeof selectA === "string")
-        || (bNotA === false && dateStateA == null && selectA == null))) return
+    if (!((bNotA === true && typeof dateStateA === "string" && !(selectA == null || selectA === "新增檔案"))
+        || (bNotA === false && dateStateA == null && (selectA == null || selectA === "新增檔案")))) return
     if (dateState == null || select == null || select === "新增檔案") return
     const toMap = (json: string): Map<string, Record<string, string>> => new Map(Object.entries(JSON.parse(json)))
     const mainMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
@@ -43,12 +43,9 @@ export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateSta
         const mainMapA: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateStateA}-${selectA}-main`) as string)
         const bNotAMap = (mapA: Map<string, Record<string, string>>, mapB: Map<string, Record<string, string>>) => {
             const result = new Map(mapB)
-            console.log("first", result)
             for (const [key] of mapA) {
-                console.log(key)
                 if (result.has(key)) { result.delete(key) }
             }
-            console.log("last result", result)
             return result
         }
         const differenceMap = bNotAMap(mainMapA, mainMap)

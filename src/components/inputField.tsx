@@ -28,6 +28,7 @@ export const InputField: React.FC = () => {
     const [select2, setSelect2] = useState<string>()
     const dateState1 = useAppSelector((store) => store.DateReducer.date1)
     const dateState2 = useAppSelector((store) => store.DateReducer.date2)
+
     const dispatch = useAppDispatch()
     const checkSavedKey = (dateState: string | null) => {
         let boolean: boolean = false
@@ -171,12 +172,36 @@ export const InputField: React.FC = () => {
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
         if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2, setSelect2)
     }, [json1, json2])
-    //日期: {key:{資料}}
-    //  key組成:(日期)-(數字)-(1.main 2. major)
-    //讀取 選日期->是否有key->無->建立->重新確認是否有key
-    //                     ->有->最大的key->讀其main和major
-    //存檔時機，換檔案時
-    //何時讀檔，換檔案後、換時間，每次重新渲染，前提：有時間
+    const [switchOption, setSwitchOption] = useState(false)
+    const switchDom = (select: typeof select2) => {
+        if (select == null || select === "新增檔案") {
+            return (
+                <section className={`${styles.switch}`} >
+                    <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">原始</label>
+                    <Form >
+                        <Form.Check
+                            type="switch"
+                            id="switch"
+                            onChange={(event) => { setSwitchOption(event.target.checked) }}
+                            disabled
+                        />
+                    </Form>
+                </section >)
+        }
+        return (
+            <section className={`${styles.switch}`} >
+                <label className={`${styles.switchLabel}`} htmlFor="switch">原始</label>
+                <Form>
+                    <Form.Check
+                        type="switch"
+                        id="switch"
+                        onChange={(event) => { setSwitchOption(event.target.checked) }}
+                    />
+                </Form>
+            </section >)
+    }
+    const switchChecked = (document.getElementById('switch') as HTMLInputElement)?.checked;
+    console.log(switchChecked)
     return (
         <div className={`${styles.input}`}>
             <div className={`${styles.singleInput}`} >
@@ -202,16 +227,7 @@ export const InputField: React.FC = () => {
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate2(date)); handdleDateChange(date, setSelect2) }} />
                     {selectDom(select2, checkSavedKey(dateState2).keyArray, handleSelect2Change, dateState2)}
-                    <section className={`${styles.switch}`}>
-                        <label className={`${styles.switchLabel}`} htmlFor="custom-switch">原始</label>
-                        <Form>
-                            <Form.Check
-                                type="switch"
-                                id="custom-switch"
-                                onChange={(event) => { console.log(event.target.checked) }}
-                            />
-                        </Form>
-                    </section>
+                    {switchDom(select2)}
                 </div>
                 {(select2 === "新增檔案" || select2 == null && dateState2) &&
                     (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
@@ -219,7 +235,7 @@ export const InputField: React.FC = () => {
                         <div className={`${styles.select}`}>...選擇檔案</div>
                     </label>
                     )}
-                {(select2 !== "新增檔案" && select2 != null) &&
+                {(select2 !== "新增檔案" && select2 != null && switchOption === false) &&
                     <List dateState={dateState2} select={select2}></List>}
                 <List dateState={dateState2} select={select2} bNotA={true} dateStateA={dateState1} selectA={select1}></List>
                 <input className={`${styles.file}`} type="file" id="uploadExcel2" accept=".xlsx" onChange={handleFile2Change}></input>

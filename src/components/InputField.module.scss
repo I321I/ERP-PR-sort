@@ -93,14 +93,20 @@
 .switch {
     display: flex;
     flex-direction: row;
+    height: 100%;
     width: 20%;
     justify-content: right;
     flex-wrap: nowrap;
     align-items: center;
-
 }
 
 .switchLabel {
     display: flex;
-    font-size: large;
+    font-size: 20px;
+}
+
+.switchLabelDisabled {
+    display: flex;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.493);
 }
