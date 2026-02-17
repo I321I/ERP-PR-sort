@@ -13,7 +13,7 @@ interface List {
 
 export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateStateA = null, selectA = undefined }) => {
     if (!((bNotA === true && typeof dateStateA === "string" && !(selectA == null || selectA === "新增檔案"))
-        || (bNotA === false && dateStateA == null && (selectA == null || selectA === "新增檔案")))) return
+        || (bNotA === false && dateStateA == null && (selectA == null || selectA === "新增檔案")))) return <div className={`${styles.noticeText}`}>左側無檔案可對照</div>
     if (dateState == null || select == null || select === "新增檔案") return
     const toMap = (json: string): Map<string, Record<string, string>> => new Map(Object.entries(JSON.parse(json)))
     const mainMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
@@ -49,7 +49,7 @@ export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateSta
             return result
         }
         const differenceMap = bNotAMap(mainMapA, mainMap)
-        if (differenceMap.size < 1) return <div>右側資料未多於左側</div>
+        if (differenceMap.size < 1) return <div className={`${styles.noticeText}`}>右側檔案的資料未多於左側</div>
         return (
             <div className={`${styles.table}`}>
                 <Table bordered hover >

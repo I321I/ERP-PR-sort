@@ -70,9 +70,9 @@ export const InputField: React.FC = () => {
         setSelect2(event.target.value)
     }
     const [switchState, setSwitchState] = useState(false)
-    const switchDom = (select: typeof select2, stateOfSwitch: typeof switchState, setSwitch: typeof setSwitchState) => {
-        if (select == null || select === "新增檔案") {
-            if (switchState) setSwitchState(false)
+    const switchDom = (secSelect: typeof select2, stateOfSwitch: typeof switchState, setSwitch: typeof setSwitchState) => {
+        if (secSelect == null || secSelect === "新增檔案") {
+            if (stateOfSwitch) setSwitchState(false)
             return (
                 <section className={`${styles.switch}`} >
                     <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">列表</label>
@@ -149,7 +149,8 @@ export const InputField: React.FC = () => {
     //coding
     //1. 第二List的array：排除掉第一List有的項目，且項目不重複。資訊包含請購單號、採購單號，採購單號不需要第二"-"後的資訊。
     //2. 第二List的次array：
-    //      資訊包含：請購單號、採購單號、廠商名稱、品號、品名、規格、請購數量、請購單位。不包含：品號是H23010001, H23020001的項目。
+    //      資訊包含：請購單號、採購單號、廠商名稱、品號、品名、規格、請購數量、請購單位。
+    //          不包含：品號是H23010001, H23020001的項目。
     //          {採購單號, the others}。品號是排除項目；採購單號=1；採購單號>1
     //              判斷品號，map下for迴圈跑採購單號
     //樣式
@@ -181,6 +182,12 @@ export const InputField: React.FC = () => {
     const beingSavedData2 = map2.size ? mapToItem(map2) : null
     const beingSavedMajor1 = majorMap1.size ? mapToItem(majorMap1) : null
     const beingSavedMajor2 = majorMap2.size ? mapToItem(majorMap2) : null
+    //日期: {key:{資料}}
+    //  key組成:(日期)-(數字)-(1.main 2. major)
+    //讀取 選日期->是否有key->無->建立->重新確認是否有key
+    //                     ->有->最大的key->讀其main和major
+    //存檔時機，換檔案時
+    //何時讀檔，換檔案後、換時間，每次重新渲染，前提：有時間
     const saveDataWhetherExists = (dateState: string | null, beingSavedData: string | null, beingSavedMajor: string | null, setSelect: typeof setSelect1 | typeof setSelect2) => {
         if (beingSavedData == null) return
         if (checkSavedKey(dateState).boolean === false) {
@@ -205,6 +212,7 @@ export const InputField: React.FC = () => {
             handdleDateChange(dateState, setSelect)
         }
     }
+
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
