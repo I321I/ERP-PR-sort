@@ -20,6 +20,7 @@
 .inputTitle {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
     height: 34px;
     width: 600px;
@@ -37,6 +38,7 @@
 
 .selectDom {
     border-radius: 10px;
+    height: 34px;
 }
 
 .selectDom:hover {
@@ -86,4 +88,19 @@
     border-style: dashed;
     border-width: 3px;
     border-radius: 10px;
+}
+
+.switch {
+    display: flex;
+    flex-direction: row;
+    width: 20%;
+    justify-content: right;
+    flex-wrap: nowrap;
+    align-items: center;
+
+}
+
+.switchLabel {
+    display: flex;
+    font-size: large;
 }

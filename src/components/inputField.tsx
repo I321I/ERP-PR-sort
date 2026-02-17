@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../main";
 import { setDate1, setDate2 } from "../store/DateState";
 import { List } from "./List";
 import { Form } from "react-bootstrap";
+import "./inputField.scss"
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -201,15 +202,16 @@ export const InputField: React.FC = () => {
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate2(date)); handdleDateChange(date, setSelect2) }} />
                     {selectDom(select2, checkSavedKey(dateState2).keyArray, handleSelect2Change, dateState2)}
-                    切換
-                    <Form>
-                        <Form.Check // prettier-ignore
-                            size={90}
-                            type="switch"
-                            id="custom-switch"
-                            onChange={(event) => { console.log(event.target.checked) }}
-                        />
-                    </Form>
+                    <section className={`${styles.switch}`}>
+                        <label className={`${styles.switchLabel}`} htmlFor="custom-switch">原始</label>
+                        <Form>
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={(event) => { console.log(event.target.checked) }}
+                            />
+                        </Form>
+                    </section>
                 </div>
                 {(select2 === "新增檔案" || select2 == null && dateState2) &&
                     (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
