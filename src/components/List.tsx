@@ -1,6 +1,7 @@
 import { Table } from "react-bootstrap"
 import { ListCollapse } from "./ListCollapse"
 import styles from './List.module.scss'
+import { v4 as uuidv4 } from 'uuid'
 
 interface List {
     dateState: string | null,
@@ -13,17 +14,17 @@ interface List {
 export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateStateA = null, selectA = undefined }) => {
     if (!((bNotA === true && typeof dateStateA === "string" && typeof selectA === "string")
         || (bNotA === false && dateStateA == null && selectA == null))) return
-    if (dateState == null || select == null || select ==="新增檔案") return
+    if (dateState == null || select == null || select === "新增檔案") return
     const toMap = (json: string): Map<string, Record<string, string>> => new Map(Object.entries(JSON.parse(json)))
     const mainMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-main`) as string)
     const majorMap: Map<string, Record<string, string>> = toMap(localStorage.getItem(`${dateState}-${select}-major`) as string)
     const list = ({ mainMap, majorMap }: { mainMap: Map<string, Record<string, string>>, majorMap: Map<string, Record<string, string>> }) => {
         const MainColumnsName = Object.keys([...mainMap][0][1]).map((namesObject) => namesObject)
-        const listHead = <thead><tr>{MainColumnsName.map((name) => <th>{name}</th>)}</tr></thead>
+        const listHead = <thead ><tr>{MainColumnsName.map((name) => <th key={name}>{name}</th>)}</tr></thead>
         const listBody =
             <tbody >{[...mainMap].map(([, item]) => {
                 return (
-                    <ListCollapse mainListObject={item} majorMap={majorMap} MainColumnsName={MainColumnsName}></ListCollapse>)
+                    <ListCollapse mainListObject={item} majorMap={majorMap} MainColumnsName={MainColumnsName} key={uuidv4()}></ListCollapse>)
             })}
             </tbody >
         return { columnsName: MainColumnsName, listHead, listBody }
