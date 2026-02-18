@@ -28,7 +28,6 @@ export const InputField: React.FC = () => {
     const [select2, setSelect2] = useState<string>()
     const dateState1 = useAppSelector((store) => store.DateReducer.date1)
     const dateState2 = useAppSelector((store) => store.DateReducer.date2)
-
     const dispatch = useAppDispatch()
     const checkSavedKey = (dateState: string | null) => {
         let boolean: boolean = false
@@ -70,22 +69,24 @@ export const InputField: React.FC = () => {
         setSelect2(event.target.value)
     }
     const [switchState, setSwitchState] = useState(false)
-    const switchDom = (secSelect: typeof select2, stateOfSwitch: typeof switchState, setSwitch: typeof setSwitchState) => {
+    const switchDom = (firstSelect: string | undefined, secSelect: string | undefined, stateOfSwitch: typeof switchState, setSwitch: typeof setSwitchState) => {
+        const disabledDom = (
+            <section className={`${styles.switch}`} >
+                <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">列表</label>
+                <Form >
+                    <Form.Check
+                        type="switch"
+                        id="switch"
+                        onChange={(event) => { setSwitchState(event.target.checked) }}
+                        disabled
+                        checked={switchState}
+                    />
+                </Form>
+            </section >)
+        if (firstSelect == null || firstSelect === "新增檔案") return disabledDom
         if (secSelect == null || secSelect === "新增檔案") {
             if (stateOfSwitch) setSwitchState(false)
-            return (
-                <section className={`${styles.switch}`} >
-                    <label className={`${styles.switchLabelDisabled}`} htmlFor="switch">列表</label>
-                    <Form >
-                        <Form.Check
-                            type="switch"
-                            id="switch"
-                            onChange={(event) => { setSwitchState(event.target.checked) }}
-                            disabled
-                            checked={switchState}
-                        />
-                    </Form>
-                </section >)
+            return disabledDom
         }
         return (
             <section className={`${styles.switch}`} >
@@ -167,8 +168,6 @@ export const InputField: React.FC = () => {
                     "品號": (json[i])["品    號"],
                     "品名": (json[i])["品       名"],
                     "規格": (json[i])["規       格"],
-
-
                 })
         }
         return map
@@ -244,7 +243,7 @@ export const InputField: React.FC = () => {
                     <span style={{ height: "auto", width: "4px" }}></span>
                     <DateSelector onChange={(date) => { dispatch(setDate2(date)); handdleDateChange(date, setSelect2) }} />
                     {selectDom(select2, checkSavedKey(dateState2).keyArray, handleSelect2Change, dateState2)}
-                    {switchDom(select2, switchState, setSwitchState)}
+                    {switchDom(select1, select2, switchState, setSwitchState)}
                 </div>
                 {(select2 === "新增檔案" || select2 == null && dateState2) &&
                     (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">

@@ -49,7 +49,7 @@ export const List: React.FC<List> = ({ dateState, select, bNotA = false, dateSta
             return result
         }
         const differenceMap = bNotAMap(mainMapA, mainMap)
-        if (differenceMap.size < 1) return <div className={`${styles.noticeText}`}>右側檔案的資料未多於左側</div>
+        if (differenceMap.size < 1) return <div className={`${styles.noticeText}`}>右側檔案的資料未多過左側</div>
         return (
             <div className={`${styles.table}`}>
                 <Table bordered hover >
