@@ -30,7 +30,6 @@ ExampleCustomInput.displayName = "ExampleCustomInput";
 export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
     const [startDate, setStartDate] = useState<Date | null>();
     const [calendarMonthOuter, setCalendarMonthOuter] = useState<string | null>()
-    console.log(calendarMonthOuter)
     const renderHeader = ({
         monthDate,
         customHeaderCount,
