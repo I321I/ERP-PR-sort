@@ -3,6 +3,7 @@ import DatePicker, { type ReactDatePickerCustomDayNameProps, type ReactDatePicke
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './Date.module.scss'
 import { addMonths } from "date-fns";
+import './Date.scss'
 
 interface DateSelector {
     onChange: (date: string) => void
@@ -28,17 +29,20 @@ ExampleCustomInput.displayName = "ExampleCustomInput";
 
 export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
     const [startDate, setStartDate] = useState<Date | null>();
+    const [calendarMonthOuter, setCalendarMonthOuter] = useState<string | null>()
+    console.log(calendarMonthOuter)
     const renderHeader = ({
         monthDate,
         customHeaderCount,
         decreaseMonth,
         increaseMonth,
     }: ReactDatePickerCustomHeaderProps) => {
-        const today = (JSON.stringify(new Date().getFullYear()) + "/" +
+        const thisMonth = (JSON.stringify(new Date().getFullYear()) + "/" +
             JSON.stringify(JSON.parse(JSON.stringify(new Date().getMonth())) + 1))
-        const calendarDate = (JSON.stringify(monthDate.getFullYear()) + "/" +
+        const calendarMonth = (JSON.stringify(monthDate.getFullYear()) + "/" +
             JSON.stringify(JSON.parse(JSON.stringify(monthDate.getMonth())) + 1))
-        return (
+        if (calendarMonthOuter !== calendarMonth) setCalendarMonthOuter(calendarMonth)
+        const result = (
             <div>
                 <button
                     aria-label="Previous Month"
@@ -74,7 +78,7 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
                     onClick={increaseMonth}
                     style={{
                         visibility:
-                            calendarDate !== today ? "visible" : "hidden",
+                            calendarMonth !== thisMonth ? "visible" : "hidden",
                     }}
                 >
                     <span
@@ -87,6 +91,7 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
                 </button>
             </div>
         )
+        return result
     };
     const renderDayName = ({
         fullName,
@@ -111,6 +116,25 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
             </>
         );
     };
+    const highlightWithRanges = (date: string | null | undefined): Array<Date | { [className: string]: Date[] }> => {
+        if (date == null) return []
+        const dateRegex = /(.+)\/(.+)/.exec(date)
+        const year = dateRegex ? dateRegex[1] : undefined
+        const month = dateRegex ? dateRegex[2] : undefined
+        if (year == null || month == null) return []
+        const standerMonth = month.length > 1 ? month : `0${month}`
+        const resultArray = [new Date("2026-02-05")]
+        for (let i = 1; i < 32; i++) {
+            if (localStorage.getItem(`${date + "/" + i}-001-main`)) {
+                if (i.toString().length > 1) resultArray.push(new Date(`${year}-${standerMonth}-${i}`))
+                resultArray.push(new Date(`${year}-${standerMonth}-0${i}`))
+            }
+        }
+        const result = ([
+            { "react-datepicker__day--highlighted-custom-2": resultArray }
+        ])
+        return result
+    };
     return <DatePicker
         showIcon
         icon={
@@ -124,6 +148,7 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
         renderCustomDayName={renderDayName}
         customInput={<ExampleCustomInput className="example-custom-input" />}
         selected={startDate}
+        highlightDates={highlightWithRanges(calendarMonthOuter)}
         onChange={(date: Date | null) => {
             setStartDate(date);
             onChange(

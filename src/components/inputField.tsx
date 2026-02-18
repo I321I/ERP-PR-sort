@@ -1,6 +1,6 @@
 import React, { useEffect, useState, type ChangeEvent } from "react";
 import { read, utils } from 'xlsx';
-import { DateSelector } from "./Date";
+import { DateSelector } from "./Date.tsx";
 import styles from './InputField.module.scss'
 import { useAppDispatch, useAppSelector } from "../main";
 import { setDate1, setDate2 } from "../store/DateState";
