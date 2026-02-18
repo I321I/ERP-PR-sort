@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../main.tsx";
 import { setDate1, setDate2 } from "../store/DateState.ts";
 import { List } from "./List.tsx";
 import { Form } from "react-bootstrap";
-import "./inputField.scss"
+import "./InputField.scss"
 
 type file = objNestedJson[]
 interface objNestedJson {
