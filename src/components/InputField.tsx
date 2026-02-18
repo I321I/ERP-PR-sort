@@ -7,6 +7,7 @@ import { setDate1, setDate2 } from "../store/DateState.ts";
 import { List } from "./List.tsx";
 import { Form } from "react-bootstrap";
 import "./InputField.scss"
+import fileImage from "../assets/fileImage.png"
 
 type file = objNestedJson[]
 interface objNestedJson {
@@ -210,10 +211,10 @@ export const InputField: React.FC = () => {
     }
 
     useEffect(() => {
-         
+
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
         if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2, setSelect2)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [json1, json2])
 
     return (
@@ -227,7 +228,7 @@ export const InputField: React.FC = () => {
                 </div>
                 {(select1 === "新增檔案" || select1 == null && dateState1) && (
                     <label className={`${styles.replaceInput}`} htmlFor="uploadExcel1">
-                        <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                        <img className={`${styles.img}`} src={fileImage} alt="Excel Image" />
                         <div className={`${styles.select}`}>...選擇檔案</div>
                     </label>
                 )}
@@ -245,7 +246,7 @@ export const InputField: React.FC = () => {
                 </div>
                 {(select2 === "新增檔案" || select2 == null && dateState2) &&
                     (<label className={`${styles.replaceInput}`} htmlFor="uploadExcel2">
-                        <img className={`${styles.img}`} src="/src/assets/fileImage.png" alt="Excel Image" />
+                        <img className={`${styles.img}`} src={fileImage} alt="Excel Image" />
                         <div className={`${styles.select}`}>...選擇檔案</div>
                     </label>
                     )}

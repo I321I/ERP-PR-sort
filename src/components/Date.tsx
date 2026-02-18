@@ -123,7 +123,7 @@ export const DateSelector: React.FC<DateSelector> = ({ onChange }) => {
         const month = dateRegex ? dateRegex[2] : undefined
         if (year == null || month == null) return []
         const standerMonth = month.length > 1 ? month : `0${month}`
-        const resultArray = [new Date("2026-02-05")]
+        const resultArray = []
         for (let i = 1; i < 32; i++) {
             if (localStorage.getItem(`${date + "/" + i}-001-main`)) {
                 if (i.toString().length > 1) resultArray.push(new Date(`${year}-${standerMonth}-${i}`))
