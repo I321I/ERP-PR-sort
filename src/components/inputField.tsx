@@ -210,9 +210,10 @@ export const InputField: React.FC = () => {
     }
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+         
         if (dateState1) saveDataWhetherExists(dateState1, beingSavedData1, beingSavedMajor1, setSelect1)
         if (dateState2) saveDataWhetherExists(dateState2, beingSavedData2, beingSavedMajor2, setSelect2)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [json1, json2])
 
     return (
