@@ -83,11 +83,8 @@ export const InputField: React.FC = () => {
                     />
                 </Form>
             </section >)
-        if (firstSelect == null || firstSelect === "新增檔案") return disabledDom
-        if (secSelect == null || secSelect === "新增檔案") {
-            if (stateOfSwitch) setSwitchState(false)
-            return disabledDom
-        }
+        if (firstSelect == null || firstSelect === "新增檔案") { if (stateOfSwitch) setSwitchState(false); return disabledDom }
+        if (secSelect == null || secSelect === "新增檔案") { if (stateOfSwitch) setSwitchState(false); return disabledDom }
         return (
             <section className={`${styles.switch}`} >
                 {stateOfSwitch === false
