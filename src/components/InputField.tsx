@@ -2,7 +2,7 @@ import React, { useEffect, useState, type ChangeEvent } from "react";
 import { read, utils } from 'xlsx';
 import { DateSelector } from "./Date.tsx";
 import styles from './InputField.module.scss'
-import { useAppDispatch, useAppSelector } from "../main.tsx";
+import { useAppDispatch, useAppSelector } from '../store/StoreConfigure.ts';
 import { setDate1, setDate2 } from "../store/DateState.ts";
 import { List } from "./List.tsx";
 import { Form } from "react-bootstrap";
