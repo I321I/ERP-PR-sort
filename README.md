@@ -1,73 +1,22 @@
-# React + TypeScript + Vite
+# ERP PR sort
+此專案旨在透過資料處理並於網頁呈現，解決我目前工作上因導入ERP整合，帶來請購(PR)相關資料的整理及獲取的不便。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## 關於專案
+由於工作上需要不同部門資料的整合，才得以順利進行，未改動作業流程前由各單位提供；改動後則要各自從ERP上獲取已整合資料，而ERP難以篩選出其中所需的新資料。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+因此，此專案主要用途在於對比資料後，呈現新資料。同時，開發配套功能以增加易用性。
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 主要功能：
+- 對照列表及其切換按鈕：最主要的功能，以列表呈現新資料。若想看原始資料，將切換按鈕關閉即可。
+- 日期選擇及資料儲存：上傳檔案，依選擇日期儲存。不僅讓使用者下次使用不必重新上傳，日期作為UI也可避免使用者忘記資料所屬時間。
+- 日期高亮提示：當一日期有資料儲存，選擇日期時，該日期將以高亮顯示，方便使用者讀取資料，以及明白已作業日期。
+- 列表摺疊：若將資料全數呈現礙閱覽，因此排除非必要資訊後，將其餘列表預設收起，待需要時展開。
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 使用框架
+為達成上述目的，且是首次開發專案，此專案使用React + TypeScript + Vite作為開發框架，以較新、已淬鍊後的框架及功能開發專案更加便利之餘，加深個人對目前主流前端框架的認識。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## GitHub Pages
+https://i321i.github.io/ERP-PR-sort/
