@@ -15,8 +15,13 @@
 - 列表摺疊：若將資料全數呈現有礙閱覽，因此排除非必要資訊後，將其餘列表預設收起，待需要時展開。
 
 
+<img width="1851" height="969" alt="image" src="https://github.com/user-attachments/assets/7bcf3685-eaf8-4553-9dbc-985d931c5be2" />
+<img width="1854" height="967" alt="image" src="https://github.com/user-attachments/assets/d38423b4-ba29-4231-812d-e8eea25a1677" />
+
+
 ### 使用框架
-為達成上述目的，且是首次開發專案，此專案使用React + TypeScript + Vite作為開發框架，以較新、已淬鍊後的框架及功能開發專案更加便利之餘，加深個人對目前主流前端框架的認識。
+為達成上述目的，且是首次開發專案，此專案使用React + TypeScript + Vite作為開發框架，以開發上更加流暢、現代化的框架及功能開發專案更加便利之餘，加深個人對於目前主流前端框架的認識。
+
 
 ## GitHub Pages
 https://i321i.github.io/ERP-PR-sort/
